@@ -1,9 +1,13 @@
 from blockchain_program.home import show_home
 from blockchain_program.transactions import add_transaction
+from blockchain_program.help import show_commands
+from blockchain_program.walkthrough import show_walkthrough
 
 commands = {
   "add": add_transaction,
-  "home": show_home
+  "home": show_home,
+  "help": show_commands,
+  "walkthrough": show_walkthrough
 }
 
 def main(): 

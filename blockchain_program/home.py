@@ -1,9 +1,14 @@
+from blockchain_program.data import transactions
 
 def show_home(): 
-  print('Transactions: ')
-  print(f"{sender}")
-  print("  John sends Jane  $20")
-  print("  Lizz sends Jazy  $23")
-  print("  Luke sends Micky $33")
-  print("  Kyle sends Nick  $50")
-  print(" ")
+  if not transactions:
+    print("No transactions yet.\n")
+    return 
+
+  for transaction in transactions:
+    sender = transaction["sender"]
+    receiver = transaction["receiver"]
+    amount = transaction["amount"] 
+    print(f"{sender} sends {receiver} ${amount}")
+  
+  print()

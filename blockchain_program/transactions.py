@@ -1,10 +1,11 @@
 import blockchain_program.data as data 
 
 def add_transaction(): 
-  print("Enter transaction details:\n")
-  sender = input("From: ")
-  receiver = input("To: ")
-  amount = input("Amount: $")
+  print()
+  print("Enter transaction details:")
+  sender = input("From     : ")
+  receiver = input("To       : ")
+  amount = input("Amount   : $")
   confirmation = input("Confirm? (yes/no) ")
 
   if confirmation == "yes":
@@ -18,5 +19,5 @@ def add_transaction():
   elif confirmation == "no":
     print("Transaction has not been recorded.\n")
   else:
-    confirmation = input("Transaction voided due to unknown entered value. Please enter 'yes' or 'no' next time.\n")
+    print("Transaction voided due to unknown entered value. Please enter 'yes' or 'no' next time.\n")
 
