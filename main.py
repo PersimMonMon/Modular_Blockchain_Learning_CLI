@@ -2,7 +2,7 @@ from blockchain_program.home import show_home
 from blockchain_program.transactions import add_transaction
 from blockchain_program.help import show_commands
 from blockchain_program.walkthrough import show_walkthrough
-from blockchain_program.blockchain import show_blockchain
+from blockchain_program.blockchain import show_blockchain, switch_hash
 from blockchain_program.edit import show_edit
 
 commands = {
@@ -11,7 +11,8 @@ commands = {
   "help": show_commands,
   "walkthrough": show_walkthrough,
   "blockchain": show_blockchain,
-  "edit": show_edit
+  "edit": show_edit,
+  "switch": switch_hash
 }
 
 def main(): 

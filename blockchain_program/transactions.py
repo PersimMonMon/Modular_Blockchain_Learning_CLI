@@ -7,7 +7,6 @@ import time
 
 
 def add_transaction(): 
-  print()
   print("Enter transaction details:")
   sender = input("From     : ")
   receiver = input("To       : ")

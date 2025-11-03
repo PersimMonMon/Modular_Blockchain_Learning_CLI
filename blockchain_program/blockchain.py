@@ -1,15 +1,45 @@
 import hashlib, random, json
 from blockchain_program.data import transactions, timestamps
 
+# track which hash to use 
+hash_256 = True
+hash_1 = False
+
+def switch_hash():
+    # let python know global variables
+    global hash_256, hash_1 
+
+    if hash_256 == True and hash_1 == False:
+        hash_256 = False
+        hash_1 = True
+        algorithm = "SHA-1"  
+    elif hash_256 == False and hash_1 == True:
+        hash_256 = True
+        hash_1 = False
+        algorithm = "SHA-256" 
+
+
+    print(f"Hash algorithm has been changed to {algorithm}.")
+    print()
+
 # create hash object, send in bytes, and return hex string
 def encode(datastring):
-    hash = hashlib.sha256()
-    hash.update(datastring.encode('utf-8'))
-    return hash.hexdigest()
+    if hash_256 == True: 
+        hash = hashlib.sha256()
+        hash.update(datastring.encode('utf-8'))
+        return hash.hexdigest()
+    elif hash_1 == True: 
+        hash = hashlib.sha1()
+        hash.update(datastring.encode('utf-8'))
+        return hash.hexdigest()
 
 def show_blockchain():
     # create temporary previous hash 
-    previous_hash = "0" * 64
+    global hash_256, hash_1 
+    if hash_256 == True and hash_1 == False:
+        previous_hash = "0" * 64
+    elif hash_256 == False and hash_1 == True: 
+        previous_hash = "0" * 40
 
     # pair up timestamps and transactions with zip
     link = zip(timestamps, transactions)

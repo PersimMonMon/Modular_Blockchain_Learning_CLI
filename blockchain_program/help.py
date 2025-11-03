@@ -1,5 +1,4 @@
 def show_commands():
-    print()
     print("add                      -add a new transaction")
     print("display blockchain       -list all blocks")
     print("home                     -display homepage")

@@ -1,5 +1,4 @@
 def show_walkthrough():
-    print("")
     print("Walkthroughs: ")
     print("1. To add a transaction enter in 'add'.")
     print("2. To edit a transactions enter in 'edit'. It'll ask for a block number afterwards.")
