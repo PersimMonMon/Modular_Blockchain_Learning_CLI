@@ -73,6 +73,7 @@ def show_blockchain():
         print(f"Hash          : {current_hash}")
         print(f"Previous Hash : {previous_hash}")
         print(f"Nonce         : {nonce}")
+        print("====================================================================")
         print()
 
         # update previous hash for next iteration

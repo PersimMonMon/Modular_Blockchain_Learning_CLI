@@ -25,3 +25,7 @@ def show_edit():
             value["sender"] = new_from
             value["receiver"] = new_to
             value["amount"] = new_amount
+
+            confirmation = input("Confirm? (yes/no) ")
+            print("====================================================================")
+            print()

@@ -11,4 +11,5 @@ def show_home():
     amount = transaction["amount"] 
     print(f"{sender} sends {receiver} ${amount}")
   
+  print("====================================================================")
   print()

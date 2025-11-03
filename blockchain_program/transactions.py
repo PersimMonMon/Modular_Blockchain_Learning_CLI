@@ -20,6 +20,7 @@ def add_transaction():
 
   if confirmation == "yes":
     print("Transaction has been added to a block.\n")
+    print("====================================================================")
     transaction = {
       "sender": sender,
       "receiver": receiver,
