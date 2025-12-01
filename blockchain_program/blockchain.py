@@ -1,5 +1,7 @@
-import hashlib, random, json
+import hashlib, random, json, requests 
 from blockchain_program.data import transactions, timestamps
+
+url = "http://127.0.0.1:8000/reward" 
 
 # track which hash to use 
 hash_256 = True
@@ -47,7 +49,8 @@ def show_blockchain():
     for index, (time, transfer_details) in enumerate(link):
         nonce = random.randint(1, 1000)     # create nonce value for each hash
 
-        
+        response = requests.get(f"{url}?block_index={index}")
+        reward = response.json()
 
         block_data = {
             "index": index,
@@ -56,7 +59,8 @@ def show_blockchain():
             "receiver": transfer_details['receiver'],
             "amount": transfer_details['amount'],
             "previous hash": previous_hash,
-            "nonce": nonce 
+            "nonce": nonce,
+            "reward": reward['reward'] 
         }
 
         # create current block's hash using json.dumps to combine all data in a string 
@@ -73,6 +77,7 @@ def show_blockchain():
         print(f"Hash          : {current_hash}")
         print(f"Previous Hash : {previous_hash}")
         print(f"Nonce         : {nonce}")
+        print(f"Reward        : {reward['reward']}")
         print("====================================================================")
         print()
 
