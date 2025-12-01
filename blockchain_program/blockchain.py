@@ -1,47 +1,50 @@
-import hashlib, random, json, requests 
+import random, json, requests 
 from blockchain_program.data import transactions, timestamps
 
-url = "http://127.0.0.1:8000/reward" 
+# ----------------------------------------
+# Global settings 
+# ----------------------------------------
+current_algorithm = "sha256"
+reward_url = "http://127.0.0.1:8000/reward" 
+hash_url = "http://127.0.0.1:3000/hash"
 
-# track which hash to use 
-hash_256 = True
-hash_1 = False
-
+# ----------------------------------------
+# Function to Swtich Hashes
+# ----------------------------------------
 def switch_hash():
-    # let python know global variables
-    global hash_256, hash_1 
+    global current_algorithm
 
-    if hash_256 == True and hash_1 == False:
-        hash_256 = False
-        hash_1 = True
-        algorithm = "SHA-1"  
-    elif hash_256 == False and hash_1 == True:
-        hash_256 = True
-        hash_1 = False
-        algorithm = "SHA-256" 
+    if current_algorithm == "sha256":
+        current_algorithm = "sha1"
+    else:
+        current_algorithm =="sha256"
 
+    print(f"Hash algorithm switched to {current_algorithm}")
 
-    print(f"Hash algorithm has been changed to {algorithm}.")
-    print()
+# ---------------------------------------- 
+# Call on the Hashing Microservice 
+# ----------------------------------------
+def go_hash(input_string):
+    global current_algorithm
+    
+    payload = {
+        "input": input_string,
+        "hash": current_algorithm
+    }
 
-# create hash object, send in bytes, and return hex string
-def encode(datastring):
-    if hash_256 == True: 
-        hash = hashlib.sha256()
-        hash.update(datastring.encode('utf-8'))
-        return hash.hexdigest()
-    elif hash_1 == True: 
-        hash = hashlib.sha1()
-        hash.update(datastring.encode('utf-8'))
-        return hash.hexdigest()
+    response = requests.post(hash_url, json=payload)
+
+    if response.status_code != 200:
+        raise Exception(f"Go service error: {response.text}")
+
+    hash = response.json()
+    return hash["hash"]
 
 def show_blockchain():
-    # create temporary previous hash 
-    global hash_256, hash_1 
-    if hash_256 == True and hash_1 == False:
-        previous_hash = "0" * 64
-    elif hash_256 == False and hash_1 == True: 
-        previous_hash = "0" * 40
+    global current_algorithm
+
+    # Record previous hashes (temp)
+    previous_hash = "0" * (64 if current_algorithm == "sha256" else 40)
 
     # pair up timestamps and transactions with zip
     link = zip(timestamps, transactions)
@@ -49,7 +52,7 @@ def show_blockchain():
     for index, (time, transfer_details) in enumerate(link):
         nonce = random.randint(1, 1000)     # create nonce value for each hash
 
-        response = requests.get(f"{url}?block_index={index}")
+        response = requests.get(f"{reward_url}?block_index={index}")
         reward = response.json()
 
         block_data = {
@@ -65,7 +68,7 @@ def show_blockchain():
 
         # create current block's hash using json.dumps to combine all data in a string 
         block_string = json.dumps(block_data)
-        current_hash = encode(block_string)
+        current_hash = go_hash(block_string)
 
         # display everything in block 
         print(f"-----Block {index}-----")
