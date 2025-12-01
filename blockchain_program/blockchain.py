@@ -77,7 +77,7 @@ def show_blockchain():
         print(f"Hash          : {current_hash}")
         print(f"Previous Hash : {previous_hash}")
         print(f"Nonce         : {nonce}")
-        print(f"Reward        : {reward['reward']}")
+        print(f"Miner Reward  : {reward['reward']}")
         print("====================================================================")
         print()
 
