@@ -7,6 +7,7 @@ from blockchain_program.data import transactions, timestamps
 current_algorithm = "sha256"
 reward_url = "http://127.0.0.1:8000/reward" 
 hash_url = "http://127.0.0.1:3000/hash"
+serialize_url = "http://127.0.0.1:7000/serialize"
 
 # ----------------------------------------
 # Function to Swtich Hashes
@@ -20,6 +21,18 @@ def switch_hash():
         current_algorithm =="sha256"
 
     print(f"Hash algorithm switched to {current_algorithm}")
+
+# ---------------------------------------- 
+# Serialization Microservice
+# ---------------------------------------- 
+def serialize_service(data_dict):
+    payload = {"data": data_dict}
+
+    response = requests.post(serialize_url, json=payload)
+    if response.status_code != 200:
+        raise Exception(f"Serializer service error: {response.text}")
+    
+    return response.json()["serialized"]
 
 # ---------------------------------------- 
 # Call on the Hashing Microservice 
@@ -67,7 +80,7 @@ def show_blockchain():
         }
 
         # create current block's hash using json.dumps to combine all data in a string 
-        block_string = json.dumps(block_data)
+        block_string = serialize_service(block_data)
         current_hash = go_hash(block_string)
 
         # display everything in block 
