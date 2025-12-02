@@ -27,10 +27,19 @@ def switch_hash():
 # Key Generation Microservice
 # ----------------------------------------
 def get_public_key():
-    response = requests.get(keygen_url)
-    if response.status_code != 200:
-        raise Exception(f"Keygen service error: {response.text}")
-    return response.json()["public_key"]
+    public_key = "MIIBIjANBgkqhkiG"
+    try:
+        response = requests.get(keygen_url, timeout=2)
+
+        if response.status_code != 200:
+            print("Keygen service returned an error, using fallback public key.")
+            return public_key
+
+        return response.json().get("public_key", public_key)
+
+    except Exception as e:
+        print(f"Keygen service unreachable ({e}), using fallback public key.")
+        return public_key
 
 # ---------------------------------------- 
 # Serialization Microservice
@@ -43,7 +52,6 @@ def serialize_service(data_dict):
         raise Exception(f"Serializer service error: {response.text}")
     
     return response.json()["serialized"]
-key = "MIIBIjANBgkqhkiG"
 
 # ---------------------------------------- 
 # Call on the Hashing Microservice 
@@ -79,6 +87,8 @@ def show_blockchain():
         response = requests.get(f"{reward_url}?block_index={index}")
         reward = response.json()
 
+        key = get_public_key()
+
         block_data = {
             "index": index,
             "timestamp": time,
@@ -88,7 +98,7 @@ def show_blockchain():
             "previous hash": previous_hash,
             "nonce": nonce,
             "reward": reward['reward'],
-            "key_gen": key
+            "gen_key": key 
         }
 
         # create current block's hash using json.dumps to combine all data in a string 
