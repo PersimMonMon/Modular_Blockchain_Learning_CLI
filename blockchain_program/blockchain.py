@@ -5,9 +5,10 @@ from blockchain_program.data import transactions, timestamps
 # Global settings 
 # ----------------------------------------
 current_algorithm = "sha256"
-reward_url = "http://127.0.0.1:8000/reward" 
+reward_url = "http://127.0.0.1:5000/reward" 
 hash_url = "http://127.0.0.1:3000/hash"
 serialize_url = "http://127.0.0.1:7000/serialize"
+keygen_url = "http://127.0.0.1:8000/generatePublicKey"
 
 # ----------------------------------------
 # Function to Swtich Hashes
@@ -22,6 +23,15 @@ def switch_hash():
 
     print(f"Hash algorithm switched to {current_algorithm}")
 
+# ----------------------------------------
+# Key Generation Microservice
+# ----------------------------------------
+def get_public_key():
+    response = requests.get(keygen_url)
+    if response.status_code != 200:
+        raise Exception(f"Keygen service error: {response.text}")
+    return response.json()["public_key"]
+
 # ---------------------------------------- 
 # Serialization Microservice
 # ---------------------------------------- 
@@ -33,6 +43,7 @@ def serialize_service(data_dict):
         raise Exception(f"Serializer service error: {response.text}")
     
     return response.json()["serialized"]
+key = "MIIBIjANBgkqhkiG"
 
 # ---------------------------------------- 
 # Call on the Hashing Microservice 
@@ -76,7 +87,8 @@ def show_blockchain():
             "amount": transfer_details['amount'],
             "previous hash": previous_hash,
             "nonce": nonce,
-            "reward": reward['reward'] 
+            "reward": reward['reward'],
+            "key_gen": key
         }
 
         # create current block's hash using json.dumps to combine all data in a string 
