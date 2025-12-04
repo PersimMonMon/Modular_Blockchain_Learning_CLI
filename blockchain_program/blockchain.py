@@ -8,7 +8,6 @@ current_algorithm = "sha256"
 reward_url = "http://127.0.0.1:5000/reward" 
 hash_url = "http://127.0.0.1:3000/hash"
 serialize_url = "http://127.0.0.1:7000/serialize"
-keygen_url = "http://127.0.0.1:8000/generatePublicKey"
 
 # ----------------------------------------
 # Function to Swtich Hashes
@@ -22,24 +21,6 @@ def switch_hash():
         current_algorithm =="sha256"
 
     print(f"Hash algorithm switched to {current_algorithm}")
-
-# ----------------------------------------
-# Key Generation Microservice
-# ----------------------------------------
-def get_public_key():
-    public_key = "MIIBIjANBgkqhkiG"
-    try:
-        response = requests.get(keygen_url, timeout=2)
-
-        if response.status_code != 200:
-            print("Keygen service returned an error, using fallback public key.")
-            return public_key
-
-        return response.json().get("public_key", public_key)
-
-    except Exception as e:
-        print(f"Keygen service unreachable ({e}), using fallback public key.")
-        return public_key
 
 # ---------------------------------------- 
 # Serialization Microservice
@@ -87,8 +68,6 @@ def show_blockchain():
         response = requests.get(f"{reward_url}?block_index={index}")
         reward = response.json()
 
-        key = get_public_key()
-
         block_data = {
             "index": index,
             "timestamp": time,
@@ -97,8 +76,7 @@ def show_blockchain():
             "amount": transfer_details['amount'],
             "previous hash": previous_hash,
             "nonce": nonce,
-            "reward": reward['reward'],
-            "gen_key": key 
+            "reward": reward['reward']  
         }
 
         # create current block's hash using json.dumps to combine all data in a string 
